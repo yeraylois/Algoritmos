@@ -1,6 +1,7 @@
   -------------------------------------------------------------------------
   Esquema de llamadas de funciones:
   
+  ```
   main()
    |
    |--> inicializar_semilla()
@@ -37,6 +38,8 @@
          |           |--> medir_tiempo(algoritmo, inicializar, ...)
          |           |--> calcular_cotas(t, n, ...)
          |           |--> imprimir resultados (cotas subestimada, ajustada, sobreestimada)
+         
+ ```
 
   -------------------------------------------------------------------------
 
