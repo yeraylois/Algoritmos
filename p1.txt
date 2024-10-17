@@ -1,0 +1,71 @@
+INTEGRANTES:
+
+Yeray Lois Sánchez  --> yeray.lois@udc.es
+Anxo Galdo Blasco   --> anxo.galdo.blasco@udc.es
+Sofía Oubiña Falcon --> sofia.oubina.falcon@udc.es
+
+ESTUDIO:
+
+En este estudio se están midiendo los tiempos que tardan diferentes implementaciones de algoritmos para calcular el término número n de la sucesión de Fibonacci. Estos tiempos se han obtenido en un MacBook Pro con un Apple M3 Pro, una memoria de 18 GB y un sistema operativo macOS Sonoma 14.6.1. La medición de tiempos ha sido hecha en microsegundos.
+
+Estas 3 tablas muestran los datos obtenidos para cada uno de los tres algoritmos: Fib1, Fib2 y Fib3.
+
+
+=================================== fib1 =====================================
+
+                   n            t        t/(1.1^n)      t/(1.62^n)      t/(2^n)
+(*)                2          0.016       0.013223       0.006111       0.004000
+(*)                4          0.047       0.032102       0.006857       0.002938
+(*)                8          0.350       0.163278       0.007450       0.001367
+(*)               16         13.088       2.848330       0.005930       0.000200
+                  32      21841.000    1034.443068       0.004484       0.000005
+
+					1.1ⁿ es		1.62ⁿ es	2ⁿ es 
+					subestimada	ajustada	sobreestimada
+							cte = 0.004484		
+
+
+================================== fib2 ======================================
+
+                   n            t         t/(n^0.8)      t/(n)          t/(nlog(n))
+(*)             1000          3.290       0.013098       0.003290       0.022727
+(*)            10000         26.338       0.016618       0.002634       0.024258
+(*)           100000        187.383       0.018738       0.001874       0.021573
+             1000000       1836.000       0.029099       0.001836       0.025365
+            10000000      18465.000       0.046382       0.001847       0.029762
+
+					  n^0.8 es	n es ajustada	nlog(n) es
+					subestimada	cte = 0.001847	sobreestimada
+		
+
+=================================== fib3 ======================================
+
+                   n            t       t/(sqrt(log(n))) t/(log(n))     t/(n^0.5)
+(*)             1000          0.026       0.009892       0.003764       0.000822
+(*)            10000          0.035       0.011533       0.003800       0.000350
+(*)           100000          0.043       0.012673       0.003735       0.000136
+(*)          1000000          0.051       0.013721       0.003692       0.000051
+(*)         10000000          0.059       0.014696       0.003660       0.000019
+
+					√(log(n)) es	log(n) es	n^0.5 es
+					subestimada	ajustada	sobreestimada
+							cte = 0.00366
+
+*: tiempo promedio de 1000 ejecuciones del algoritmo
+
+
+Discusión: 
+
+-> En Fib1, los primeros tiempos son bajos porque calcular los términos pequeños de la secuencia de Fibonacci es rápido. Sin embargo, la recursividad en la función hace que los tiempos crezcan exponencialmente para valores más      
+   grandes.
+
+-> En Fib2, no hubo anomalías; aunque los tiempos iniciales son mayores que los de Fib1, crecen de forma lineal, lo que lo hace más eficiente a medida que  n  aumenta.
+
+-> Fib3 mostró un comportamiento constante y eficiente, con tiempos que crecen logarítmicamente gracias a su implementación.
+
+
+Conclusión: 	Para Fib1, t(n) = O(1.62ⁿ)
+		Para Fib2, t(n) = O(n)
+		Para Fib3, t(n) = O(log(n))
+
+Se puede ver que, de los tres algoritmos, Fib3 es el más eficiente, ya que su complejidad es logarítmica. Por otra parte, Fib1 es el menos eficiente, ya que su complejidad es exponencial.
