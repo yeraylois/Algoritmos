@@ -1,0 +1,181 @@
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                   INTEGRANTES                                 │
+├───────────────────────────────────────────────────────────────────────────────┤
+│   Yeray Lois Sánchez  --> yeray.lois@udc.es                                   │
+│   Anxo Galdo Blasco   --> anxo.galdo.blasco@udc.es                            │
+│   Sofía Oubiña Falcon --> sofia.oubina.falcon@udc.es                          │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                 	INTRODUCCIÓN                        	│
+└───────────────────────────────────────────────────────────────────────────────┘
+
+En  este  estudio  se  analizan  empíricamente  los tiempos de ejecución de dos
+algoritmos  de  ordenación  fundamentales  en  informática: 
+
+	1. Ordenación Por Inserción 
+	2. Ordenación Rápida (Quicksort).
+
+El  objetivo  principal  es  determinar  la  complejidad  de  estos algoritmos  
+en  función del número de elementos del vector a ordenar y evaluar cómo influye 
+el estado inicial de los datos en su rendimiento.
+
+Para lograr este objetivo, se realizarán mediciones precisas de los tiempos de
+ejecución   (expresados  en  microsegundos)  variando  el tamaño  del  vector, 
+permitiendo observar cómo escala el rendimiento de cada algoritmo con respecto 
+al incremento  de  datos.  
+
+Se  considerarán  tamaños desde pequeños conjuntos hasta volúmenes de datos más 
+grandes para obtener una visión completa del comportamiento de los algoritmos.
+
+Además,  se  utilizarán  tres tipos de inicialización del vector:
+
+1.  Inicialización  aleatoria:  Los  elementos  del vector se asignan de forma
+    aleatoria,  representando  un  caso común en aplicaciones prácticas donde
+    los datos no tienen un orden específico.
+    
+2.  Inicialización  descendente:  El  vector se inicializa en orden decreciente.
+    Este caso suele representar el peor escenario para ciertos algoritmos, ya
+    que  requiere  el  máximo número de operaciones para ordenar los datos.
+
+3.  Inicialización  ascendente: El vector se inicializa en orden creciente. Es-
+    te  escenario  permite  observar  el rendimiento en el mejor de los casos
+    para algunos algoritmos, como la ordenación por inserción, donde los datos
+    ya están ordenados.
+    
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                    MÁQUINA                                    │
+├───────────────────────────────────────────────────────────────────────────────┤
+│  Los tiempos de ejecución se han obtenido utilizando un MacBook Pro con       │
+│  procesador Apple M3 Pro, 18 GB de memoria RAM, y sistema operativo           │
+│  macOS Sonoma 14.6.1.          						│
+└───────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                           TABLAS TIEMPOS DE EJECUCIÓN                		│
+└───────────────────────────────────────────────────────────────────────────────┘
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │			      Ordenación Por Inserción 			     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+Ordenación Por Inserción con inicialización ALEATORIA
+               n         t(n)(µs)     t(n)/n^1.8       t(n)/n^2       t(n)/n^2.2
+(*)          500          80.586       0.0011172       0.0003223       0.0000930
+(*)         1000         297.972       0.0011862       0.0002980       0.0000748
+            2000        1178.000       0.0013468       0.0002945       0.0000644
+            4000        4596.000       0.0015089       0.0002873       0.0000547
+            8000       18512.000       0.0017454       0.0002893       0.0000479
+           16000       73562.000       0.0019918       0.0002874       0.0000415
+           32000      293528.000       0.0022823       0.0002866       0.0000360
+
+Ordenación Por Inserción con inicialización DESCENDENTE
+               n         t(n)(µs)     t(n)/n^1.8       t(n)/n^2       t(n)/n^2.2
+(*)          500         149.504       0.0020726       0.0005980       0.0001726
+            1000         593.000       0.0023608       0.0005930       0.0001490
+            2000        2305.000       0.0026352       0.0005763       0.0001260
+            4000        9030.000       0.0029647       0.0005644       0.0001074
+            8000       36384.000       0.0034304       0.0005685       0.0000942
+           16000      147456.000       0.0039925       0.0005760       0.0000831
+           32000      573383.000       0.0044584       0.0005599       0.0000703
+
+Ordenación Por Inserción con inicialización ASCENDENTE
+               n         t(n)(µs)     t(n)/n^0.8         t(n)/n       t(n)/n^1.2
+(*)          500           1.367       0.0094746       0.0027338       0.0007888
+(*)         1000           2.704       0.0107632       0.0027036       0.0006791
+(*)         2000           5.370       0.0122793       0.0026852       0.0005872
+(*)         4000          10.689       0.0140376       0.0026723       0.0005087
+(*)         8000          20.392       0.0153808       0.0025489       0.0004224
+(*)        16000          40.412       0.0175072       0.0025258       0.0003644
+(*)        32000          80.596       0.0200536       0.0025186       0.0003163     
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │			      Ordenación Rápida 			     │
+    └────────────────────────────────────────────────────────────────────────┘
+	
+Ordenación Rápida con inicialización ALEATORIA
+               n         t(n)(µs)    t(n)/n^1.05      t(n)/n*log(n)   t(n)/n^1.25
+(*)          500          24.802       0.0363546       0.0079817       0.0104898
+(*)         1000          54.748       0.0387586       0.0079256       0.0097357
+(*)         2000         116.552       0.0398510       0.0076670       0.0087143
+(*)         4000         251.231       0.0414869       0.0075726       0.0078977
+            8000         516.000       0.0411534       0.0071769       0.0068200
+           16000        1041.000       0.0400982       0.0067211       0.0057850
+           32000        2267.000       0.0421739       0.0068293       0.0052968
+           64000        4895.000       0.0439809       0.0069113       0.0048087
+          128000       10240.000       0.0444354       0.0068028       0.0042295
+          256000       21980.000       0.0460655       0.0068947       0.0038170
+          512000       45935.000       0.0464954       0.0068246       0.0033539
+
+Ordenación Rápida con inicialización DESCENDENTE
+               n         t(n)(µs)    t(n)/n^1.005     t(n)/n^1.0435    t(n)/n^1.09
+(*)          500           8.922       0.0172977       0.0136169       0.0101994
+(*)         1000          17.911       0.0173030       0.0132624       0.0096188
+(*)         2000          36.769       0.0176988       0.0132085       0.0092759
+(*)         4000          76.773       0.0184136       0.0133801       0.0090984
+(*)         8000         155.405       0.0185720       0.0131398       0.0086516
+(*)        16000         329.903       0.0196447       0.0135328       0.0086277
+           32000         636.000       0.0188704       0.0126571       0.0078135
+           64000        1288.000       0.0190417       0.0124356       0.0074333
+          128000        2739.000       0.0201765       0.0128298       0.0074256
+          256000        5705.000       0.0209399       0.0129645       0.0072656
+          512000       11702.000       0.0214015       0.0129014       0.0070009
+
+Ordenación Rápida con inicialización ASCENDENTE
+               n         t(n)(µs)    t(n)/n^1.005     t(n)/n^1.0435    t(n)/n^1.09
+(*)          500           5.739       0.0111266       0.0087590       0.0065607
+(*)         1000          12.304       0.0118864       0.0091107       0.0066077
+(*)         2000          26.269       0.0126447       0.0094367       0.0066271
+(*)         4000          55.639       0.0133447       0.0096968       0.0065938
+(*)         8000         120.093       0.0143520       0.0101542       0.0066858
+(*)        16000         251.888       0.0149991       0.0103326       0.0065874
+           32000         537.000       0.0159330       0.0106869       0.0065972
+           64000        1032.000       0.0152570       0.0099639       0.0059558
+          128000        2200.000       0.0162060       0.0103050       0.0059644
+          256000        4553.000       0.0167115       0.0103466       0.0057985
+          512000        9540.000       0.0174475       0.0105178       0.0057075
+      
+(*): Tiempo promedio de 10000 ejecuciones del algortimo
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                           	 CONCLUSIONES	                  		│
+└───────────────────────────────────────────────────────────────────────────────┘
+
+1. Ordenación Por Inserción:
+   
+   - Inicialización Aleatoria y Descendente: Se ajusta bien a la complejidad 
+     esperada O(n^2). Los valores de t(n)/n^2 muestran consistencia a medida 
+     que aumenta el tamaño del vector, lo cual refleja un incremento gradual 
+     y sostenido en los tiempos de ejecución.
+   
+   - Inicialización Ascendente: El algoritmo funciona con una complejidad 
+     cercana a O(n), como se puede observar en los valores significativamente 
+     bajos de tiempo para los tamaños crecientes del vector. Este es el mejor 
+     caso para el algoritmo, dado que los datos ya están ordenados.
+
+2. Ordenación Rápida (Quicksort):
+   
+   - Inicialización Aleatoria: La complejidad medida se ajusta bien a 
+     O(n*log(n)), confirmada por la estabilidad de las cotas ajustadas, lo que 
+     indica que Quicksort maneja eficientemente vectores aleatorios, su caso 
+     típico de uso.
+
+   - Inicialización Descendente y Ascendente: Los resultados muestran un 
+     comportamiento ligeramente peor, con una complejidad algo superior a 
+     O(n*log(n)), pero aún dentro de márgenes aceptables. La razón probable 
+     es que, en estos casos, el algoritmo necesita más tiempo para ordenar 
+     los datos iniciales debido a su disposición.
+
+3. Comparación entre Algoritmos:
+   
+   - Ordenación Por Inserción es más adecuada para vectores pequeños o 
+     ya ordenados, como se puede ver en la inicialización ascendente.
+   
+   - Ordenación Rápida, por otro lado, ofrece un rendimiento significativamente 
+     mejor en vectores de mayor tamaño y en condiciones más comunes como la 
+     inicialización aleatoria, donde alcanza su mejor desempeño.
+     
+   - En general, Ordenación Rápida es el algoritmo más eficiente en la mayoría 
+     de los casos prácticos debido a su complejidad O(n*log(n)).
+
+      
+      
