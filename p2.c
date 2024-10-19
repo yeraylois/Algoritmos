@@ -9,9 +9,12 @@
 #include <sys/time.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 
 #define MAX_TAM 32000 // Constante para el tamaño máximo del array
+#define MAX_TAM_INS 512000 // Constante para el caso Ascendente de ord_ins
 #define MAX_TAM_RAP 512000 //Constante para extender tamaño en ord_rap
+#define MIN_TIME 500 // Constante para tiempos mínimos
 // ------------------------------------------------------------------------- //
 //                          Funciones de Utilidades                          //
 // ------------------------------------------------------------------------- //
@@ -137,39 +140,39 @@ void ord_rap(int v[], int n) {
 // ------------------------------------------------------------------------- //
 //                            Funciones de Test                              //
 // ------------------------------------------------------------------------- //
-// Función para test ord_ins
-void test_ordenacion_insercion(int v[], int n, 
-			       void (*inicializacion)(int[], int), 
-			       char* tipo_inicializacion) {
-  printf("\nOrdenacion por insercion con inicializacion %s\n", 
-  	tipo_inicializacion);
-  	
-  inicializacion(v, n);
-  imprimir_vector(v, n);
-  printf("ordenado? %d\n", esta_ordenado(v, n));
+// Función auxiliar para probar el algoritmo de ordenación
+void test_ordenacion_aux(int v[], int n, 
+                         void (*inicializacion)(int[], int),
+                         void (*algoritmo)(int[], int),
+                         char *nombre_algoritmo, char *tipo_inicializacion) {
+  printf("\n%s con inicializacion %s\n", nombre_algoritmo, tipo_inicializacion);
   
-  if(esta_ordenado(v, n) == 0){
-  	printf("ordenando...\n");
-  	ord_ins(v, n);
-  	imprimir_vector(v, n);
-  	printf("ordenado? %d\n", esta_ordenado(v, n));
+  inicializacion(v, n); // Inicializa el array
+  imprimir_vector(v, n); // Imprime el array inicializado
+  printf("ordenado? %d\n", esta_ordenado(v, n)); // Verifica si está ordenado
+  
+  if (!esta_ordenado(v, n)) {
+    printf("ordenando...\n");
+    algoritmo(v, n); // Ordena el array
+    imprimir_vector(v, n); // Imprime el array después de ordenar
+    printf("ordenado? %d\n", esta_ordenado(v, n)); // Verifica si ahora está ordenado
   }
 }
 
-// Función para test ord_rap
-void test_ordenacion_rapida(int v[], int n, void (*inicializacion)(int[], int), 
-			    char* tipo_inicializacion) {
-  printf("\nOrdenacion rapida con inicializacion %s\n", tipo_inicializacion);
-  inicializacion(v, n);
-  imprimir_vector(v, n);
-  printf("ordenado? %d\n", esta_ordenado(v, n));
+// Función para test ord_ins
+void test_ordenacion_insercion(int v[], int n, 
+                               void (*inicializacion)(int[], int), 
+                               char *tipo_inicializacion) {
+  test_ordenacion_aux(v, n, inicializacion, ord_ins, 
+                      "Ordenacion por insercion", tipo_inicializacion);
+}
 
-  if(esta_ordenado(v, n) == 0){
-  	printf("ordenando...\n");
-  	ord_rap(v, n);
-  	imprimir_vector(v, n);
-  	printf("ordenado? %d\n", esta_ordenado(v, n));
-  }
+// Función para test ord_rap
+void test_ordenacion_rapida(int v[], int n, 
+                            void (*inicializacion)(int[], int), 
+                            char *tipo_inicializacion) {
+  test_ordenacion_aux(v, n, inicializacion, ord_rap, 
+                      "Ordenacion rapida", tipo_inicializacion);
 }
 
 // Función de test()
@@ -181,7 +184,8 @@ void test() {
   test_ordenacion_insercion(v, n, descendente, "descendente");
   test_ordenacion_insercion(v, n, ascendente, "ascendente");
 
-  printf("------------------------------------------------------------\n");
+	printf("====================================================================");
+	printf("=======\n");
 
   test_ordenacion_rapida(v, n, aleatorio, "aleatoria");
   test_ordenacion_rapida(v, n, descendente, "descendente");
@@ -196,20 +200,19 @@ void test() {
 double medir_tiempo(void (*algoritmo)(int[], int),
                     void (*inicializar)(int[], int), int v[], int n,
                     int *tiempo_pequeno) {
-  double t_inicio, t_fin, t_total;
+  double t_inicio, t_fin, t_init, t_fin_init, t_total, t1, t2;
   int iteraciones, i;
   *tiempo_pequeno = 0; //Check para tiempo pequeño
   iteraciones = 1;
 
   // Medición inicial
+  inicializar(v, n); // Inicializa el array
   t_inicio = microsegundos();
   algoritmo(v, n); // Ejecuta el algoritmo
   t_fin = microsegundos();
   t_total = t_fin - t_inicio;
 
-  
-  if (t_total < 500) { //Tiempo Menor a 500 microsegundos
-    *tiempo_pequeno = 1;
+  if (t_total < MIN_TIME) { //Tiempo Menor a 500 microsegundos
     iteraciones = 10000;  // Numero de Iteraciones
     t_inicio = microsegundos();
     for (i = 0; i < iteraciones; i++) {
@@ -217,7 +220,20 @@ double medir_tiempo(void (*algoritmo)(int[], int),
       algoritmo(v, n);
     }
     t_fin = microsegundos();
-    t_total = (t_fin - t_inicio) / iteraciones; // Promedia el tiempo
+    t1 = t_fin - t_inicio;
+    
+    //Se calcula el tiempo de inicialización para restarlo
+    t_init = microsegundos();
+    for (i = 0; i < iteraciones; i++) {
+      inicializar(v, n); // Reinicializa el array antes de cada ejecución
+    }
+    t_fin_init = microsegundos();
+    
+    t2 = t_fin_init - t_init; 
+    
+    t_total = (t1 - t2) / iteraciones; // Media del tiempo
+    
+    *tiempo_pequeno = 1;
   }
 
   return t_total;
@@ -263,7 +279,6 @@ void ejecutar_prueba_para_n(void (*algoritmo)(int[], int),
   double tiempo, n_double, t;
   double cociente_sub, cociente_ajus, cociente_sobre;
 
-  inicializar(v, n); // Inicializa el array
   tiempo = medir_tiempo(algoritmo, inicializar, v, n, tiempo_pequeno); 
 
   n_double = (double)n;
@@ -338,9 +353,17 @@ void ejecutar_pruebas_inicializacion(void (*algoritmo)(int[], int),
 		   64000, 128000, 256000, 512000};
   int n_tamanos = 
   	(algoritmo == ord_rap) ? sizeof(tamanos) / sizeof(tamanos[0]) : 7;
-  
+  	
   // Ajustar el tamaño del array dependiendo del algoritmo
   int max_size = (algoritmo == ord_rap) ? MAX_TAM_RAP : MAX_TAM;
+  
+  if (algoritmo == ord_ins && 
+  		strcmp(nombre_inicializacion, "inicialización ascendente") == 0) {
+  		
+  		n_tamanos = 11;
+  		max_size = MAX_TAM_INS; // Caso especial en Ordenación Ascendente para Insercion
+  }
+  
   int v[max_size], i, tiempo_pequeno;
   double exponente_sub, exponente_ajus, exponente_sobre;
   char *cota_sub, *cota_ajus, *cota_sobre;
@@ -383,9 +406,9 @@ void ejecutar_pruebas(void (*algoritmo)(int[], int), char *nombre_algoritmo) {
 int main() {
   inicializar_semilla(); // Inicializa la semilla 
   
+  //ejecutar_pruebas(ord_ins, "Ordenación por inserción");
+  ejecutar_pruebas(ord_rap, "Ordenación rápida");
   //test();
-  ejecutar_pruebas(ord_ins, "Ordenación por inserción"); 
-  ejecutar_pruebas(ord_rap, "Ordenación rápida"); 
 
   return 0;
 }
