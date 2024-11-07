@@ -1,0 +1,292 @@
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                   INTEGRANTES                                 │
+├───────────────────────────────────────────────────────────────────────────────┤
+│   Yeray Lois Sánchez  --> yeray.lois@udc.es                                   │
+│   Anxo Galdo Blasco   --> anxo.galdo.blasco@udc.es                            │
+│   Sofía Oubiña Falcon --> sofia.oubina.falcon@udc.es                          │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                 	INTRODUCCIÓN                        	│
+└───────────────────────────────────────────────────────────────────────────────┘
+
+En esta práctica se analizan empíricamente el rendimiento de diferentes implementaciones
+de tablas de dispersión cerradas con distintas estrategias de resolución de colisiones y
+funciones de dispersión.
+
+El objetivo principal es comparar cómo afectan estas variaciones al número de colisiones
+y al tiempo de búsqueda en una tabla de dispersión con un factor de carga aproximado de 
+0.5, utilizando un conjunto de datos real extraído del archivo `sinonimos.txt`, que 
+contiene 19,062 entradas.
+
+Las estrategias de resolución de colisiones consideradas son:
+
+1. Exploración Lineal:  
+
+   En esta estrategia, se resuelve la colisión moviéndose secuencialmente a la siguiente 
+   posición disponible en la tabla. La fórmula utilizada es:
+
+       pos = (pos_ini + num_intento) % tam
+
+   donde:
+       - pos_ini: posición inicial calculada por la función de dispersión principal.
+       - num_intento: número de intento actual, que define el incremento lineal.
+       - tam: tamaño de la tabla.
+
+2. Exploración Cuadrática:  
+
+   En esta estrategia, el incremento para resolver la colisión sigue un patrón cuadrático. 
+   Esto ayuda a reducir agrupaciones primarias y mejora la distribución de los elementos. 
+   La fórmula utilizada es:
+
+       pos = (pos_ini + num_intento^2) % tam
+
+   donde:
+       - pos_ini: posición inicial calculada por la función de dispersión principal.
+       - num_intento: número de intento actual.
+       - tam: tamaño de la tabla.
+
+3. Exploración Doble:  
+
+   En esta estrategia, se utiliza una segunda función de dispersión para calcular el 
+   incremento. Esto asegura una mejor distribución de los elementos, incluso en casos 
+   donde la función de dispersión principal genera agrupaciones. La fórmula utilizada es:
+
+       pos = (pos_ini + num_intento * h2(pos_ini)) % tam
+
+   donde:
+       - h2(pos_ini) = (10007 - (pos_ini % 10007))
+       - pos_ini: posición inicial calculada por la función de dispersión principal.
+       - num_intento: número de intento actual.
+       - tam: tamaño de la tabla.
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                    MÁQUINA                                    │
+├───────────────────────────────────────────────────────────────────────────────┤
+│  Los tiempos de ejecución se han obtenido utilizando un MacBook Pro con       │
+│  procesador Apple M3 Pro, 18 GB de memoria RAM, y sistema operativo           │
+│  macOS Sonoma 14.6.1.                                                         │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                           TABLAS TIEMPOS DE EJECUCIÓN                         │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+A continuación, se presentan los resultados obtenidos para cada combinación de 
+función de dispersión y estrategia de resolución de colisiones. 
+
+
+Se muestran el número total de colisiones durante la inserción de los 19,062 
+elementos y los tiempos de búsqueda para diferentes valores de `n`.
+
+┌──────────────────────────────────────────────────────────┐
+│ (*): Tiempo promedio de 1000 ejecuciones del algoritmo.  │
+└──────────────────────────────────────────────────────────┘
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		    Dispersión cerrada lineal con dispersión A 		     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+*** Dispersión cerrada lineal con dispersion A ***
+Insertando 19062 elementos... Número total de colisiones: 172623183
+Buscando n elementos...
+
+               n        t(n)(µs)      t(n)/n^0.8        t(n)/n     t(n)/(n*log(n))
+             125        3876.000      81.4433742      31.0080000       6.4221179
+             250        7351.000      88.7144605      29.4040000       5.3254022
+             500       15355.000     106.4323907      30.7100000       4.9415827
+            1000       31141.000     123.9745540      31.1410000       4.5081215
+            2000       63119.000     144.3231879      31.5595000       4.1520728
+            4000      125757.000     165.1521285      31.4392500       3.7905790
+            8000      235894.000     177.9282491      29.4867500       3.2809730
+           16000      468218.000     202.8393076      29.2636250       3.0229943
+
+                                      n^0.8 es         n es            (n * log(n)) es
+                                      subestimada      ajustada        sobreestimada
+                                                       cte = 29.5
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		    Dispersión cerrada cuadrática con dispersión A 	     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+*** Dispersión cerrada cuadratica con dispersion A ***
+Insertando 19062 elementos... Número total de colisiones: 2106581
+Buscando n elementos...
+
+               n        t(n)(µs)      t(n)/n^0.8        t(n)/n     t(n)/(n*log(n))
+(*)          125          61.456       1.2913271       0.4916480       0.1018260
+(*)          250         117.251       1.4150264       0.4690040       0.0849420
+(*)          500         235.443       1.6319610       0.4708860       0.0757708
+(*)         1000         470.606       1.8735162       0.4706060       0.0681272
+            2000         953.000       2.1790586       0.4765000       0.0626899
+            4000        2044.000       2.6843114       0.4918000       0.0616104
+            8000        3875.000       2.9228042       0.4843750       0.0538961
+           16000        7808.000       3.3825468       0.4880000       0.0504114
+
+                                       n^0.8 es        n es            (n*log(n)) es
+                                       subestimada     ajustada        sobreestimada
+                                                       cte = 0.47
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		    Dispersión cerrada doble con dispersión A 		     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+*** Dispersión cerrada doble con dispersion A ***
+Insertando 19062 elementos... Número total de colisiones: 1451531
+Buscando n elementos...
+
+               n        t(n)(µs)      t(n)/n^0.8        t(n)/n     t(n)/(n*log(n))
+(*)          125          53.984       1.1343238       0.4318720       0.0894457
+(*)          250         105.840       1.2773144       0.4233600       0.0766754
+(*)          500         209.999       1.4555972       0.4199980       0.0675824
+(*)         1000         421.691       1.6787821       0.4216910       0.0610460
+            2000         865.000       1.9778443       0.4325000       0.0569011
+            4000        1788.000       2.3481159       0.4470000       0.0538941
+            8000        3388.000       2.5554737       0.4235000       0.0471226
+           16000        6962.000       3.0160465       0.4351250       0.0449493
+
+                                       n^0.8 es        n es            (n*log(n)) es
+                                       subestimada     ajustada        sobreestimada
+                                                       cte = 0.425
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		    Dispersión cerrada lineal con dispersión B 		     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+*** Dispersión cerrada lineal con dispersion B ***
+Insertando 19062 elementos... Número total de colisiones: 16965
+Buscando n elementos...
+
+               n        t(n)(µs)      t(n)/n^0.8        t(n)/n     t(n)/(n*log(n))
+(*)          125           9.218       0.1936907       0.0737440       0.0152732
+(*)          250          18.740       0.2261609       0.0749600       0.0135761
+(*)          500          37.028       0.2566577       0.0740560       0.0119164
+(*)         1000          74.265       0.2956543       0.0742650       0.0107510
+(*)         2000         147.424       0.3370887       0.0737120       0.0096978
+(*)         4000         292.066       0.3835597       0.0730165       0.0088035
+            8000         589.000       0.4442662       0.0736250       0.0081922
+           16000        1166.000       0.5051293       0.0728750       0.0075281
+
+                                       n^0.8 es        n es            (n*log(n)) es
+                                       subestimada     ajustada        sobreestimada
+                                                       cte = 0.735
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		    Dispersión cerrada cuadrática con dispersión B 	     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+*** Dispersión cerrada cuadratica con dispersion B ***
+Insertando 19062 elementos... Número total de colisiones: 13366
+Buscando n elementos...
+
+               n        t(n)(µs)      t(n)/n^0.8        t(n)/n     t(n)/(n*log(n))
+(*)          125           9.003       0.1891730       0.0720240       0.0149170
+(*)          250          17.945       0.2165666       0.0717800       0.0130002
+(*)          500          35.831       0.2483607       0.0716620       0.0115312
+(*)         1000          71.513       0.2846984       0.0715130       0.0103526
+(*)         2000         142.966       0.3268954       0.0714830       0.0094045
+(*)         4000         286.446       0.3761792       0.0716115       0.0086341
+            8000         591.000       0.4457748       0.0738750       0.0082200
+           16000        1150.000       0.4981979       0.0718750       0.0074248
+
+                                       n^0.8 es        n es            (n*log(n)) es
+                                       subestimada     ajustada        sobreestimada
+                                                       cte = 0.716
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		    Dispersión cerrada doble con dispersión A 		     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+*** Dispersión cerrada doble con dispersion B ***
+Insertando 19062 elementos... Número total de colisiones: 19401
+Buscando n elementos...
+
+               n        t(n)(µs)      t(n)/n^0.8        t(n)/n     t(n)/(n*log(n))
+(*)          125           9.518       0.1999943       0.0761440       0.0157703
+(*)          250          18.956       0.2287677       0.0758240       0.0137326
+(*)          500          38.104       0.2641159       0.0762080       0.0122627
+(*)         1000          76.094       0.3029357       0.0760940       0.0110157
+(*)         2000         151.937       0.3474078       0.0759685       0.0099947
+(*)         4000         303.580       0.3986807       0.0758950       0.0091505
+            8000         626.000       0.4721743       0.0782500       0.0087068
+           16000        1231.000       0.5332883       0.0769375       0.0079478
+
+                                       n^0.8 es        n es            (n*log(n)) es
+                                       subestimada     ajustada        sobreestimada
+                                                       cte = 0.762
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                           	 CONCLUSIONES	                  		│
+└───────────────────────────────────────────────────────────────────────────────┘
+
+Impacto de las Funciones de Dispersión
+--------------------------------------
+
+    • Función de Dispersión A:
+
+        - Genera un número significativamente mayor de colisiones durante la inserción,
+          especialmente notable en la exploración lineal (más de 172 millones de colisiones).
+
+        - Esto se debe a que la función A produce más colisiones al no distribuir las
+          claves tan uniformemente.
+
+    • Función de Dispersión B:
+
+        - Reduce drásticamente el número de colisiones en comparación con la función A,
+          evidenciando una mejor distribución de las claves.
+
+        - Mejora notablemente el rendimiento en términos de tiempos de búsqueda y número
+          de colisiones.
+
+
+Estrategias de Resolución de Colisiones
+----------------------------------------
+
+    - La exploración lineal es especialmente sensible a una mala distribución de claves, 
+      presentando el peor rendimiento con la función de dispersión A. Aunque mejora con 
+      la función B, sigue siendo menos eficiente que las otras estrategias en términos de 
+      tiempos de búsqueda y colisiones.
+
+    - La exploración cuadrática ofrece un balance aceptable entre simplicidad y eficiencia, 
+      logrando resultados consistentes con ambas funciones de dispersión.
+
+    - La exploración doble destaca como la estrategia más eficiente, combinando 
+      un bajo número de colisiones con tiempos de búsqueda óptimos. Aunque requiere una 
+      implementación más compleja, sus beneficios en aplicaciones de alta demanda justifican 
+      su uso.
+
+Comportamiento de las Cotas Teóricas
+-------------------------------------
+
+    - Los tiempos de búsqueda se aproximan a una complejidad lineal O(n), lo cual es
+      esperado en tablas de dispersión con factor de carga constante.
+
+    - Las cotas subestimadas (t(n)/n^0.8) crecen con 'n', reflejando que subestiman 
+      el comportamiento real de los tiempos de búsqueda.
+
+    - Las cotas ajustadas (t(n)/n) se mantienen aproximadamente constantes, validando 
+      el comportamiento lineal teórico.
+
+    - Las cotas sobreestimadas (t(n)/(n*log(n))) disminuyen con 'n', evidenciando 
+      que sobreestiman el crecimiento real de los tiempos.
+
+
+Síntesis
+----------------
+
+    - Seleccionar funciones de dispersión que distribuyan las claves de manera uniforme es 
+      fundamental para minimizar colisiones. En este caso, la función B sería la recomendada
+      como la mejor opción.
+
+    - La estrategia de resolución de colisiones debe adaptarse a los requisitos específicos 
+      de la aplicación:
+
+        · La exploración doble es ideal para aplicaciones donde el rendimiento es crítico.
+
+        · La exploración cuadrática es adecuada si se busca un equilibrio entre simplicidad 
+          y eficiencia.
+
+
+En conclusión, los resultados muestran que el rendimiento de las tablas de dispersión depende fundamentalmente de una buena elección de la función de dispersión y la estrategia de resolución de colisiones, siendo la exploración cuadrática con la función de dispersión B la configuración más eficiente.
+

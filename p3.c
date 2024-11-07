@@ -1,3 +1,9 @@
+/* 
+Yeray Lois Sánchez  --> yeray.lois@udc.es                                  
+Anxo Galdo Blasco   --> anxo.galdo.blasco@udc.es                            
+Sofía Oubiña Falcon --> sofia.oubina.falcon@udc.es  
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,7 +54,7 @@ double microsegundos() {
     return (t.tv_usec + t.tv_sec * 1000000.0);
 }
 
-void print_division(){
+void print_line(){
 	printf("\n-------------------------------------------------------------"
            "----------------------\n");
 }
@@ -87,13 +93,6 @@ unsigned int ndispersion(char *clave, int tamTabla) {
     return 6;
 }
 
-/* Función de dispersión secundaria para doble hashing */
-unsigned int dispersionSecundaria(char *clave, int tamTabla, int pos_ini) {
-   
-    unsigned int h2 = 10007 - (pos_ini % 10007);
-    return h2;
-}
-
 // ------------------------------------------------------------------------- //
 //                 Funciones de Resolución de Colisiones                     //
 // ------------------------------------------------------------------------- //
@@ -107,14 +106,7 @@ unsigned int resol_colisiones_cuadratica(int pos_ini, int num_intento) {
 }
 
 unsigned int resol_colisiones_doble(int pos_ini, int num_intento) {
-    return 0; 
-}
-
-unsigned int resol_colisiones_doble_con_clave(int pos_ini, int num_intento, 
-		 char *clave, int tamTabla) {
-		 
-    unsigned int h2 = dispersionSecundaria(clave, tamTabla, pos_ini);
-    return num_intento * h2;
+    return num_intento *  (10007 - (pos_ini % 10007));
 }
 
 // ------------------------------------------------------------------------- //
@@ -139,39 +131,25 @@ void liberar_cerrada(tabla_cerrada diccionario) {
     free(diccionario);
 }
 
-pos buscar_cerrada(char *clave, tabla_cerrada diccionario, int tam, 
-				   int *colisiones, unsigned int (*dispersion)(char *, int),
-                   unsigned int (*resol_colisiones)(int pos_ini, int num_intento)) {
-                   
+int buscar_cerrada(char *clave, tabla_cerrada diccionario, int tam, 
+                   int *colisiones, unsigned int (*dispersion)(char *, int),
+                   unsigned int (*resol_colisiones)(int, int)) {
     int intento = 0;
-    unsigned int pos_ini = dispersion(clave, tam);
-    unsigned int pos = pos_ini;
+    unsigned int pos_ini = dispersion(clave, tam), pos = pos_ini;
     *colisiones = 0;
 
-    // Recorre mientras la posición esté ocupada y no encuentre la clave
-    while (diccionario[pos].ocupada 
-    	   && strcmp(diccionario[pos].clave, clave) != 0 && intento < tam) {
-    	   
+    while (diccionario[pos].ocupada && strcmp(diccionario[pos].clave, clave) 
+           && intento < tam) {
         intento++;
         (*colisiones)++;
-        
-        if (resol_colisiones == resol_colisiones_lineal 
-        	|| resol_colisiones == resol_colisiones_cuadratica) {
-        	
-            pos = (pos_ini + resol_colisiones(pos_ini, intento)) % tam;
-            
-        } else { /* CASO: resol_colisiones_doble */
-            pos = (pos_ini + resol_colisiones_doble_con_clave(pos_ini, intento, clave, tam)) % tam;
-        }
+        pos = (pos_ini + resol_colisiones(pos_ini, intento)) % tam;
     }
 
-    if (diccionario[pos].ocupada && strcmp(diccionario[pos].clave, clave) == 0) {
+    if (diccionario[pos].ocupada && strcmp(diccionario[pos].clave, clave) == 0) 
         return pos; // Clave encontrada
-    } else if (!diccionario[pos].ocupada) {
+    if (!diccionario[pos].ocupada) 
         return pos; // Posición vacía
-    } else {
-        return -1; // No encontrado y tabla llena
-    }
+    return -1; // Tabla llena
 }
 
 int insertar_cerrada(char *clave, char *sinonimos, tabla_cerrada *diccionario, 
@@ -263,13 +241,9 @@ int leer_sinonimos(item datos[]) {
 void imprimir_resultados(int n, double t_n, double t_n_div_n_pow,
                          double t_n_div_n, double t_n_div_n_logn,
                          int es_promediado) {
-    if (es_promediado) {
-        printf("(*)   %10d %15.3f %15.7f %15.7f %15.7f\n",
-               n, t_n, t_n_div_n_pow, t_n_div_n, t_n_div_n_logn);
-    } else {
-        printf("      %10d %15.3f %15.7f %15.7f %15.7f\n",
-               n, t_n, t_n_div_n_pow, t_n_div_n, t_n_div_n_logn);
-    }
+    const char *formato = es_promediado ? "(*)   %10d %15.3f %15.7f %15.7f %15.7f\n"
+                                        : "      %10d %15.3f %15.7f %15.7f %15.7f\n";
+    printf(formato, n, t_n, t_n_div_n_pow, t_n_div_n, t_n_div_n_logn);
 }
 
 void medir_tiempos_busqueda(tabla_cerrada diccionario, int tam,
@@ -346,7 +320,7 @@ void insercion_medicion() {
     num_datos = leer_sinonimos(datos);
     if (num_datos == EXIT_FAILURE) return;
     
-    print_division(); 
+    print_line(); 
     
     for (d = 0; d < 2; d++) {
         for (r = 0; r < 3; r++) {
@@ -374,7 +348,7 @@ void insercion_medicion() {
             liberar_cerrada(diccionario);
             
         }
-        print_division();
+        print_line();
     }
 }
 
