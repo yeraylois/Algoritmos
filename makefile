@@ -6,7 +6,7 @@ SRC = p4.c
 
 # Compilador y opciones
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall 
 
 # Regla para compilar y ejecutar
 all: $(EXEC)

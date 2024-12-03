@@ -1,0 +1,350 @@
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                   INTEGRANTES                                 │
+├───────────────────────────────────────────────────────────────────────────────┤
+│   Yeray Lois Sánchez  --> yeray.lois@udc.es                                   │
+│   Anxo Galdo Blasco   --> anxo.galdo.blasco@udc.es                            │
+│   Sofía Oubiña Falcon --> sofia.oubina.falcon@udc.es                          │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                   INTRODUCCIÓN                        	│
+└───────────────────────────────────────────────────────────────────────────────┘
+
+ En esta práctica se analizan y validan las operaciones básicas sobre montículos 
+ de mínimos, así como su rendimiento empírico en diferentes escenarios de uso, 
+ incluyendo la ordenación por montículos y la creación de montículos.
+
+ El objetivo principal es:
+
+	1. Implementar y comprobar el correcto funcionamiento de las operaciones 
+	   básicas sobre montículos:
+
+		• Inicialización del montículo.
+		• Inserción de elementos.
+		• Consulta del menor elemento.
+		• Eliminación del menor elemento.
+		• Creación de un montículo desde un vector.
+
+	2. Comparar empíricamente el rendimiento de dos enfoques:
+
+		• Añadir n elementos a un montículo inicialmente vacío, cuya 
+		  complejidad teórica esperada es O(n*log(n)).
+
+		• Crear un montículo directamente desde un vector, cuya 
+		  complejidad teórica esperada es O(n) .
+
+	3. Implementar y validar el algoritmo de ordenación por montículos, 
+	  que permite ordenar un vector empleando dicha técnica.
+
+	4. Analizar la complejidad empírica del algoritmo de ordenación en 
+	   tres casos iniciales:
+
+		• Vector ordenado en orden ascendente.
+		• Vector ordenado en orden descendente.
+		• Vector desordenado.
+
+ Los resultados obtenidos serán comparados con los de otros algoritmos de ordenación 
+ vistos en prácticas anteriores.
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                    MÁQUINA                                    │
+├───────────────────────────────────────────────────────────────────────────────┤
+│  Los tiempos de ejecución se han obtenido utilizando un MacBook Pro con       │
+│  procesador Apple M3 Pro, 18 GB de memoria RAM, y sistema operativo           │
+│  macOS Sonoma 14.6.1.                                                         │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                           TABLAS TIEMPOS DE EJECUCIÓN                         │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+ A continuación, se presentan los resultados obtenidos para la demostración 
+ empírica del segundo punto:
+
+┌────────────────────────────────────────────────────────────────────┐
+│  (*): Tiempo promedio de 10000 ejecuciones del algoritmo. 	     │
+│ 								     │
+│ (µs): Las mediciones de tiempos fueron realizadas en microsegundos │
+└────────────────────────────────────────────────────────────────────┘
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		  Inserción de n elementos uno a uno (O(n log n)) 	     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+         n         t(n)(µs)   [t(n)/(n^1.02)]     [t(n)/(n log n)]   [t(n)/(n^1.25)]
+(*)     500        11.9989      0.02119298          0.00436151         0.00107321
+(*)    1000        27.1877      0.02367950          0.00403582         0.00085975
+(*)    2000        61.5318      0.02642707          0.00414766         0.00068795
+(*)    4000       137.4640      0.02911306          0.00414345         0.00054337
+(*)    8000       303.7923      0.03172671          0.00422535         0.00042456
+      16000       666.0000      0.03429824          0.00429995         0.00032907
+      32000      1412.0000      0.03585764          0.00425363         0.00024667
+      64000      3109.0000      0.03893294          0.00438960         0.00019202
+     128000      6579.0000      0.04062615          0.00437070         0.00014366
+     256000     14225.0000      0.04331592          0.00446211         0.00010982
+				
+				n^1.02 es 	    n*log(n) es        n^1.25 es 
+				subestimada	    ajustada	       sobreestimada
+						    cte = 0.0043
+			
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		    Creación de montículo desde un vector (O(n)) 	     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+         n         t(n)(µs)     [t(n)/n^0.95]        [t(n)/n]         [t(n)/n^1.2]
+(*)     500         5.2497       0.01954616         0.01049940         0.00563985
+(*)    1000        10.4550       0.02086047         0.01045500         0.00523991
+(*)    2000        20.9603       0.02241148         0.01048015         0.00490077
+(*)    4000        41.9833       0.02405595         0.01049583         0.00457942
+(*)    8000        84.0947       0.02582187         0.01051184         0.00427927
+(*)   16000       168.0668       0.02765502         0.01050417         0.00398979
+(*)   32000       339.3566       0.02992412         0.01060489         0.00375830
+      64000       676.0000       0.03194366         0.01056250         0.00349260
+     128000      1375.0000       0.03481879         0.01074219         0.00331415
+     256000      2725.0000       0.03697861         0.01064453         0.00306410
+
+				 n^0.95 es 	    n es               n^1.2 es 
+				 subestimada	    ajustada	       sobreestimada
+						    cte = 0.01065
+
+
+ Ahora se muestran los resultados obtenidos mediante el cálculo empírico de la 
+ complejidad del algoritmo de ordenación para tres situaciones iniciales diferentes:
+
+	• CASO (A): Vector ordenado en orden ascendente.
+	• CASO (B): Vector ordenado en orden descendente.
+	• CASO (C): Vector desordenado.
+
+┌──────────────────────────────────────────────────────────┐
+│ (*): Tiempo promedio de 10000 ejecuciones del algoritmo. │
+└──────────────────────────────────────────────────────────┘
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		 		CASO (A): VECTOR ASCENDENTE 		     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+            n       t(n)(µs)        [t(n)/(n^1.05)]    [t(n)/(n^1.12)]     [t(n)/(n^1.21)]
+(*)      2000       104.0495          0.03557611          0.01936761          0.00248770
+(*)      4000       271.5926          0.04484922          0.02309884          0.00246056
+         8000       670.0000          0.05343555          0.02603653          0.00230011
+        16000      1284.0000          0.04945828          0.02279867          0.00167031
+        32000      2710.0000          0.05041524          0.02198618          0.00133586
+        64000      5457.0000          0.04903035          0.02022882          0.00101930
+       128000     11379.0000          0.04937802          0.01927333          0.00080540
+       256000     23549.0000          0.04935379          0.01822474          0.00063159
+
+				      n^1.05 es 	  n^1.12 es           n^1.21 es 
+				      subestimada	  ajustada	      sobreestimada
+						    	  cte = 0.020
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		 		CASO (B): VECTOR DESCENDENTE 		     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+            n       t(n)(µs)        [t(n)/(n^1.02)]     [t(n)/(n^1.1)]      [t(n)/(n^1.3)]
+(*)      2000       125.9543          0.05409566          0.02944964          0.00301142
+(*)      4000       284.7146          0.06029878          0.03105587          0.00257944
+         8000       650.0000          0.06788308          0.03307611          0.00223145
+        16000      1396.0000          0.07189241          0.03314007          0.00181601
+        32000      2750.0000          0.06983606          0.03045564          0.00135557
+        64000      5702.0000          0.07140418          0.02945976          0.00106506
+       128000     11666.0000          0.07203902          0.02811843          0.00082571
+       256000     24056.0000          0.07325186          0.02704951          0.00064519
+
+				      n^1.02 es 	  n^1.1 es            n^1.3 es 
+				      subestimada	  ajustada	      sobreestimada
+						          cte = 0.029
+
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │		 		CASO (C): VECTOR ALEATORIO 		     │
+    └────────────────────────────────────────────────────────────────────────┘
+
+            n       t(n)(µs)        [t(n)/(n^1.05)]    [t(n)/(n*log(n))]    [t(n)/(n^1.2)]
+(*)      2000       161.6516          0.05527115          0.01063371          0.01767437
+(*)      4000       377.2681          0.06229986          0.01137165          0.01795470
+         8000       811.0000          0.06468095          0.01127994          0.01680014
+        16000      1796.0000          0.06917997          0.01159566          0.01619431
+        32000      3785.0000          0.07041390          0.01140226          0.01485545
+        64000      8198.0000          0.07365783          0.01157477          0.01400528
+       128000     17440.0000          0.07567911          0.01158610          0.01296864
+       256000     36960.0000          0.07746045          0.01159365          0.01196311
+
+				      n^1.05 es 	  n*log(n) es         n^1.2 es 
+				     subestimada	  ajustada	      sobreestimada
+						    	  cte = 0.01158
+
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│               COMPARACION CON OTROS ALGORITMOS DE ORDENACIÓN	                │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+ La ordenación por montículos ha sido comparada con los algoritmos de ordenación:
+
+	• Ordenación por Inserción
+	• Ordenación Rápida (Quicksort)
+
+ analizando el comportamiento en las mismas condiciones iniciales para vectores:
+
+	1. Vector Ordenado en orden ascendente.
+	2. Vector Ordenado en orden descendente.
+	3. Vector Desordenado aleatoriamente.
+
+
+
+   	┌────────────────────────────────────────────────────────────────────────┐
+    	│		    1. VECTOR ORDENADO EN ORDEN ASCENDENTE	         │
+   	└────────────────────────────────────────────────────────────────────────┘
+
+ La ordenación por inserción demuestra ser significativamente más eficiente en este 
+ caso en comparación con los otros algoritmos evaluados (Quicksort y ordenación por 
+ montículos). 
+
+ Esto se debe a que el vector inicial está ordenado en un patrón que favorece la 
+ naturaleza del algoritmo, el cual realiza un número mínimo de comparaciones y 
+ movimientos en estas condiciones, representando su caso óptimo de ejecución. 
+
+ Esta eficiencia se puede apreciar claramente en los tiempos de ejecución obtenidos: 
+ la ordenación por inserción es aproximadamente 9.52 veces más rápida que Quicksort 
+ y 49.27 veces más rápida que la ordenación por montículos para un tamaño de entrada 
+ de  n = 256000.
+
+
+ ORDENACIÓN POR INSERCIÓN:
+                n         t(n)(µs)    t(n)/n^0.8         t(n)/n       t(n)/n^1.2
+ (*)       256000         477.928      0.0225305       0.0018669       0.0001547
+
+ ORDENACIÓN RÁPIDA:
+                n         t(n)(µs)    t(n)/n^1.005    t(n)/n^1.0435   t(n)/n^1.09
+           256000        4553.000      0.0167115       0.0103466       0.0057985
+
+ ORDENACIÓN POR MONTÍCULOS:
+                n         t(n)(µs)    t(n)/(n^1.05)   t(n)/(n^1.12)   t(n)/(n^1.21)
+           256000       23549.000      0.04935379      0.01822474      0.00063159
+
+
+ El siguiente algoritmo más eficiente en este estudio es Quicksort, gracias a su buen 
+ rendimiento promedio y menor dependencia de cómo estén ordenados losdatos inicialmente. 
+ Aunque no supera a la ordenación por inserción en este caso específico, es mucho más 
+ rápido que la ordenación por montículos.
+
+ Por su parte, la ordenación por montículos es la menos eficiente en este análisis. Su 
+ mayor tiempo de ejecución se debe al coste extra de construir y mantener el montículo, 
+ lo que no compensa en este escenario.
+
+   	┌────────────────────────────────────────────────────────────────────────┐
+    	│		    2. VECTOR ORDENADO EN ORDEN DESCENDENTE	         │
+   	└────────────────────────────────────────────────────────────────────────┘
+
+ Con un  n = 32,000 , queda claro que el algoritmo más eficiente en este caso es la 
+ ordenación rápida (Quicksort), ya que presenta los tiempos de ejecución más bajos 
+ para realizar la ordenación. 
+
+ En comparación: Quicksort es aproximadamente 4.33 veces más rápido que la Ordenación 
+ por montículos, al igual que lo es 913.3 veces más eficiente con respecto a la 
+ Ordenación por inserción.
+
+
+ ORDENACIÓN POR INSERCIÓN:
+               n        t(n)(µs)      t(n)/n^1.8       t(n)/n^2        t(n)/n^2.2
+           32000      579031.000       0.0045023       0.0005655        0.0000710
+
+ ORDENACION RÁPIDA:
+               n        t(n)(µs)     t(n)/n^1.005     t(n)/n^1.0435    t(n)/n^1.09
+           32000         634.000       0.0188111       0.0126173        0.0077889
+
+ ORDENACIÓN POR MONTÍCULOS:
+               n        t(n)(µs)     t(n)/(n^1.02)    t(n)/(n^1.1)     t(n)/(n^1.3)
+           32000        2750.000       0.06983606      0.03045564       0.00135557
+ 
+ En este orden de eficiencia, el segundo lugar lo ocupa la ordenación por montículos, 
+ que aunque es más lenta que Quicksort, es considerablemente más eficiente que la 
+ Ordenación por inserción. Finalmente, la Ordenación por inserción es la menos eficiente, 
+ con tiempos de ejecución significativamente mayores debido a su complejidad cuadrática
+
+   	┌────────────────────────────────────────────────────────────────────────┐
+    	│		     3. VECTOR DESORDENADO ALEATORIAMENTE	         │
+   	└────────────────────────────────────────────────────────────────────────┘
+
+
+
+ Con una inicialización aleatoria y un tamaño de  n = 32,000 , la ordenación rápida 
+ (Quicksort) resulta ser la más eficiente de los algoritmos evaluados. Esto se debe 
+ a su capacidad para manejar vectores desordenados de manera óptima gracias a su 
+ particionado eficiente y su complejidad logarítmica en promedio, lo que le permite 
+ superar a los otros métodos en tiempo de ejecución.
+
+ En segundo lugar se encuentra la ordenación por montículos, que, aunque tiene un 
+ rendimiento constante independientemente de la disposición inicial de los datos, 
+ no logra igualar la velocidad de Quicksort. Esto se debe al coste adicional asociado 
+ a la construcción y mantenimiento del montículo, que afecta su eficiencia en 
+ comparación con Quicksort.
+
+ Finalmente, la ordenación por inserción ocupa el último lugar. Su complejidad 
+ cuadrática penaliza severamente su rendimiento en tamaños grandes, haciendo 
+ que sus tiempos de ejecución sean significativamente mayores que los de los 
+ otros dos algoritmos.
+
+
+ ORDENACIÓN POR INSERCIÓN:
+               n        t(n)(µs)      t(n)/n^1.8        t(n)/n^2          t(n)/n^2.2
+           32000      289319.000       0.0022496        0.0002825          0.0000355
+
+ ORDENACIÓN RÁPIDA:
+               n        t(n)(µs)      t(n)/n^1.05     t(n)/n*log(n)       t(n)/n^1.25
+           32000        2267.000       0.0421739        0.0068293          0.0052968
+
+ ORDENACIÓN POR MONTÍCULOS:
+               n        t(n)(µs)      t(n)/(n^1.05)    t(n)/(n*log(n))    t(n)/(n^1.2)
+           32000       3785.0000       0.07041390       0.01140226         0.01485545
+ 
+
+ En este caso, las relaciones de tiempos en funcion de Quicksort sería:
+
+ - Quicksort es aproximadamente 127.62 veces más rápida que la ordenación por inserción.
+ - Quicksort es aproximadamente 1.67 veces más rápida que la ordenación por montículos. 
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                           	 CONCLUSIONES	                  		│
+└───────────────────────────────────────────────────────────────────────────────┘
+
+ Como conclusion podemos deducir:
+
+ En el caso de la ordenación de un vector ascendente, lo más eficiente es emplear 
+ el algoritmo de ordenación por inserción, ya que tiene tiempos de ejecución 
+ significativamente menores. Esto demuestra que es la mejor opción para ordenar 
+ este tipo de vectores debido a su capacidad de aprovechar el orden ya existente, 
+ realizando un mínimo de comparaciones y movimientos.
+
+ Para la ordenación de un vector descendente, el algoritmo de ordenación rápida 
+ (Quicksort) resulta ser la mejor opción. Quicksort divide el vector en particiones 
+ más pequeñas, ordenándolas de manera eficiente gracias a su enfoque de 
+ “divide y vencerás”. Este enfoque permite manejar el caso descendente de forma 
+ óptima, superando en rendimiento a los otros algoritmos evaluados.
+
+ En cuanto a la ordenación de vectores aleatoriamente desordenados, nuevamente 
+ Quicksort es la técnica más eficiente. Su capacidad para manejar datos en cualquier 
+ disposición inicial, optimizando particiones de forma dinámica, lo convierte en la 
+ opción ideal para este tipo de vectores, mostrando un excelente equilibrio entre 
+ tiempo de ejecución y complejidad computacional.
+
+ Finalmente, si se busca un algoritmo que sea eficiente en uso general, la ordenación 
+ rápida debería ser la opción preferida. Esto se debe a que, en la mayoría de los casos, 
+ los vectores suelen encontrarse desordenados de manera aleatoria en situaciones prácticas, 
+ lo que favorece el rendimiento de Quicksort. Sin embargo, sería recomendable adoptar un 
+ enfoque mixto, en el que primero se evalúe el estado inicial del vector. Si se detecta un 
+ patrón claro (como orden ascendente o descendente), se podría optar por el algoritmo más 
+ adecuado para ese caso específico, maximizando así la eficiencia global del proceso de 
+ ordenación.
+
+
+
+
+
+
+
+
+
+
+
+
